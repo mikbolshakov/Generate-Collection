@@ -1,0 +1,115 @@
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+.connect-button {
+    float: right;
+    background-color: antiquewhite;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 15px;
+    width: 100%;
+    max-width: 174px;
+  }
+  .connect-button:hover {
+    background-color: rgb(216, 199, 177);
+    cursor: pointer;
+  }
+
+  .nft-button {
+    float: left;
+    background-color: antiquewhite;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 15px;
+    width: 100%;
+    max-width: 174px;
+  }
+  .nft-button:hover {
+    background-color: rgb(216, 199, 177);
+    cursor: pointer;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 60px;
+    padding: 10px;
+  }
+
+
+  @media screen and (max-width: 768px) {
+    .container {
+      padding: 10px;
+    }
+  
+    .title {
+      margin-top: 30px;
+    }
+  
+    .connect-button,
+    .create-employee-button,
+    .table-button {
+      width: 100%;
+      max-width: none;
+      margin-right: 0;
+    }
+  
+    .total-payout,
+    .total-bottom {
+      margin-right: 10px;
+    }
+  
+    .form-input {
+      width: 100%;
+      max-width: none;
+    }
+  }
+
+  @media screen and (max-width: 400px) {
+    .table-button {
+      margin-top: 0;
+    }
+  
+    .smallText {
+      font-size: 14px;
+    }
+  
+    .table td {
+      padding-bottom: 0;
+      padding-left: 0;
+    }
+  
+    .lablelMobile {
+      display: flex;
+      background: lightgray;
+      height: 30px;
+      font-weight: 500;
+      align-items: center;
+      margin-bottom: 4px;
+      padding-left: 8px;
+      width: 100%;
+    }
+  
+    .table tr {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 24px;
+    }
+  
+    .table thead {
+      display: none;
+    }
+  
+    .connect-button {
+      margin-right: 0 !important;
+    }
+  
+    .total-payout {
+      margin-left: 0;
+    }
+  }
