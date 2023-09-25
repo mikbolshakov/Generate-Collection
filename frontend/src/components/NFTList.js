@@ -1,38 +1,24 @@
 import React from "react";
-// import axios from "axios";
-import { fetchWatches } from "./functions/fetchWatches";
+import axios from "axios";
 
 function NFTList() {
   const [watches, setWatches] = React.useState([]);
 
-//   React.useEffect(() => {
-//     fetchWatches();
-//   }, []);
 
-//   const fetchWatches = async () => {
-//     try {
-//       const response = await axios.get("http://localhost:3500/all");
-//       setWatches(response.data);
-//     } catch (error) {
-//       console.error(error);
-//       alert("Watches display error");
-//     }
-//   };
-
-React.useEffect(() => {
-    // Внутри useEffect вызываем fetchWatches и обновляем состояние watches
-    async function fetchData() {
-      try {
-        const fetchedWatches = await fetchWatches();
-        setWatches(fetchedWatches);
-      } catch (error) {
-        console.error(error);
-        alert("Watches display error");
-      }
-    }
-
-    fetchData(); // Вызываем функцию для получения данных
+  React.useEffect(() => {
+    fetchWatches();
   }, []);
+
+
+  const fetchWatches = async () => {
+    try {
+      const response = await axios.get("http://localhost:3500/all");
+      setWatches(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Watches display error");
+    }
+  };
 
   const renderTableRows = () => {
     return watches.map((watch, index) => (

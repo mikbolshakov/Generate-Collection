@@ -20,6 +20,7 @@ contract NFTWatches is ERC721, ERC721URIStorage, AccessControl {
         address to,
         string memory uri
     ) public onlyRole(MINTER_ROLE) {
+        require(tokenCounter <= COLLECTION_LIMIT, "Collection is over");
         _safeMint(to, tokenCounter);
         _setTokenURI(tokenCounter, uri);
         tokenCounter++;

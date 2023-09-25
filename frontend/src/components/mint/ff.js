@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import contractAbi from "../../ABI/contractAbi.json";
 import axios from "axios";
 import "./Mint.css";
-import IPFS from 'ipfs-http-client';
-
-const contractAddress = "0x15d790f36CB5d0fa86B669D703534AefAd58eCCf";
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-const signer = provider.getSigner();
-const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 const MintComponent = ({onMintSuccess}) => {
   const [showMintModal, setShowMintModal] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [newWatch, setNewWatch] = useState({
     id: "",
     walletAddress: "",
@@ -24,6 +15,22 @@ const MintComponent = ({onMintSuccess}) => {
     walletAddress: false,
     desc: false,
   });
+
+  const mintNFT = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:3500/watches", {
+        id: newWatch.id,
+        walletAddress: newWatch.walletAddress,
+        desc: newWatch.desc,
+      });
+      onMintSuccess(); /// gpt
+      handleModalClose();
+    } catch (error) {
+      alert("Limitation in a database");
+      console.error("Failed to add employee to database: ", error);
+    }
+  };
 
   const openMintModalWindow = () => {
     setShowMintModal(true);
@@ -42,47 +49,6 @@ const MintComponent = ({onMintSuccess}) => {
       walletAddress: false,
       desc: false,
     });
-  };
-
-
-
-//   const ipfs = IPFS.create();
-//   //{ host: 'YOUR_IPFS_API_ENDPOINT', port: 5001, protocol: 'https' }
-
-//   const uploadMetadataToIPFS = async (metadata) => {
-//     try {
-//       const metadataCID = await ipfs.add(JSON.stringify(metadata));
-//       console.log(metadataCID)
-//       return metadataCID.path;
-//     } catch (error) {
-//       console.error('Failed to upload metadata to IPFS:', error);
-//       throw error;
-//     }
-//   };
-
-
-  const mintNFT = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:3500/watches", {
-        id: newWatch.id,
-        walletAddress: newWatch.walletAddress,
-        desc: newWatch.desc,
-      });
-
-    // const metadata = {
-    //     id: newWatch.id,
-    //     walletAddress: newWatch.walletAddress,
-    //     desc: newWatch.desc,
-    //   };
-    //   const metadataCID = await uploadMetadataToIPFS(metadata);
-    //   await contract.safeMint(signer.address, metadataCID);
-      handleModalClose();
-      onMintSuccess(); /// gpt
-    } catch (error) {
-      alert("Limitation in a database");
-      console.error("Failed to add employee to database: ", error);
-    }
   };
 
   const handleInputChange = (e) => {
@@ -203,7 +169,6 @@ const MintComponent = ({onMintSuccess}) => {
                 </label>
               </div>
 
-              {/* {error && <p className="error">{error}</p>} */}
               <div className="button-group">
                 <button className="add-employee-button" onClick={mintNFT}>
                   Mint NFT

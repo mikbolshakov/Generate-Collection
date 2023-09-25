@@ -1,9 +1,9 @@
 import React from "react";
-// import Wallet from "./components/Wallet";
+import Wallet from "./components/Wallet";
 import NFTList from "./components/NFTList";
 import MintPage from "./components/mint/Mint";
-// import Transfer from "./components/Transfer";
-// import arrow from "./images/arrow.png";
+import Transfer from "./components/Transfer";
+import arrow from "./images/arrow.png";
 import "./App.css";
 
 function App() {
@@ -21,35 +21,35 @@ function App() {
     };
   }, []);
 
-//   const scrollToTop = () => {
-//     window.scrollTo({
-//       top: 0,
-//       behavior: "smooth",
-//     });
-//   };
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className="container">
       <div className="section" id="mint">
         <MintPage />
       </div>
-      {/* <div className="section" id="transfer">
+      <div className="section" id="transfer">
         <Transfer />
       </div>
       <div className="section" id="wallet">
         <Wallet />
-      </div> */}
+      </div>
       <div className="section" id="list">
         <NFTList />
       </div>
-      {/* {showButton && (
+      {showButton && (
         <img
           className="scroll-top-button"
           onClick={scrollToTop}
           src={arrow}
           alt="UP"
         />
-      )} */}
+      )}
     </div>
   );
 }
