@@ -1,0 +1,22 @@
+.list_title {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 60px;
+  padding: 10px;
+}
+
+.list_table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.list_table th {
+  background-color: lightgray;
+  padding: 10px;
+  text-align: left;
+}
+
+.list_table td {
+  padding: 10px;
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import "./wallet.css";
 
 function Wallet() {
   const [metaMaskConnected, setMetaMaskConnected] = React.useState(false);
@@ -89,11 +90,11 @@ function Wallet() {
   return (
     <>
       {metaMaskConnected ? (
-        <button className="connect-button" onClick={disconnectWalletHandler}>
+        <button className="wallet-button" onClick={disconnectWalletHandler}>
           {shortAddress(walletAddress)}
         </button>
       ) : (
-        <button className="connect-button" onClick={connectMetamaskHandler}>
+        <button className="wallet-button" onClick={connectMetamaskHandler}>
           Connect wallet
         </button>
       )}
