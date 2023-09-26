@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Watch = new mongoose.Schema({
   id: { type: Number, unique: true, required: true },
-  walletAddress: { type: String, unique: true, required: true },
+  walletAddress: { type: String, required: true },
   desc: { type: String, required: true },
 });
 

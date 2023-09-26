@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./wallet.css";
 
 function Wallet() {
-  const [metaMaskConnected, setMetaMaskConnected] = React.useState(false);
-  const [walletAddress, setWalletAddress] = React.useState("");
+  const [metaMaskConnected, setMetaMaskConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
 
   const shortAddress = (address) => {
     return address ? address.substr(0, 6) + "..." + address.substr(-5) : "";
@@ -83,7 +83,7 @@ function Wallet() {
         console.log(error);
       }
     } else {
-      alert("install metamask extension!!");
+      alert("Install MetaMask extension!");
     }
   };
 

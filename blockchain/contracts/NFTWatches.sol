@@ -7,23 +7,27 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract NFTWatches is ERC721, ERC721URIStorage, AccessControl {
     uint256 constant COLLECTION_LIMIT = 200;
-    uint256 tokenCounter = 1;
+    uint256 tokenCounter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    constructor() ERC721("NFTWatches", "NFTW") {
+    constructor() ERC721("EMIVNWATCH", "EMIVNW") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
+    }
+
+    function getTokenCounter() external view returns (uint256) {
+        return tokenCounter;
     }
 
     function safeMint(
         address to,
         string memory uri
     ) public onlyRole(MINTER_ROLE) {
-        require(tokenCounter <= COLLECTION_LIMIT, "Collection is over");
+        require(tokenCounter < COLLECTION_LIMIT, "Collection is over");
+        tokenCounter++;
         _safeMint(to, tokenCounter);
         _setTokenURI(tokenCounter, uri);
-        tokenCounter++;
     }
 
     // The following functions are overrides required by Solidity.

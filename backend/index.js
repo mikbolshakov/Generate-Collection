@@ -31,7 +31,7 @@ app.post("/watches", async (req, res) => {
     const newWatch = new Watch({
       id,
       walletAddress,
-      desc
+      desc,
     });
     const user = await newWatch.save();
     res.json({ ...user._doc });
@@ -43,9 +43,33 @@ app.post("/watches", async (req, res) => {
   }
 });
 
-app.put("/watches/patch", async (req, res) => {
+app.get("/watches/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const watch = await Watch.findOne({ id });
+  
+      if (!watch) {
+        return res.status(404).json({
+          message: "Watch not found in database",
+        });
+      }
+  
+      res.json({
+        walletAddress: watch.walletAddress,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Error fetching walletAddress from database",
+      });
+    }
+  });
+  
+
+app.put("/watches/:id", async (req, res) => {
   try {
-    const { id, walletAddress, desc } = req.body;
+    const { id } = req.params;
+    const { walletAddress } = req.body;
     const updatedWatch = await Watch.findOneAndUpdate(
       { id },
       { $set: { walletAddress } }
@@ -65,7 +89,6 @@ app.put("/watches/patch", async (req, res) => {
     });
   }
 });
-
 
 async function startApp() {
   try {

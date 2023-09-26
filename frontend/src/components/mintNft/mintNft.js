@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
+import contractAbi from "../../additions/contractAbi.json";
 import axios from "axios";
 import "./mintNft.css";
+
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
+const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 const MintNft = () => {
   const [openMintModal, setOpenMintModal] = useState(false);
@@ -33,19 +40,50 @@ const MintNft = () => {
     });
   };
 
+  const validateForm = () => {
+    const { walletAddress, desc } = newWatch;
+    if (!walletAddress.startsWith("0x") || walletAddress.length !== 42)
+      alert(
+        'The wallet address must start with "0x" and be 42 characters long'
+      );
+    else if (!desc) alert("Enter the description of the Watch");
+    return false;
+  };
+
   const mintNFT = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post("http://localhost:3500/watches", {
-        id: newWatch.id,
-        walletAddress: newWatch.walletAddress,
-        desc: newWatch.desc,
-      });
-      closeMintModalWindow();
-      window.location.reload();
-    } catch (error) {
-      alert("Limitation in a database");
-      console.error("Failed to add Watch to database: ", error);
+    if (validateForm()) {
+      let receipt;
+      let tokenId;
+
+      try {
+        let tx = await contract.safeMint(newWatch.walletAddress, "uri");
+        receipt = await tx.wait();
+        tx = await contract.getTokenCounter();
+        tokenId = tx.toNumber();
+      } catch (error) {
+        alert("Limitation in a smart contract");
+        console.error("Failed to mint NFT on the smart contract: ", error);
+      }
+
+      if (receipt && receipt.status === 1) {
+        try {
+          await axios.post("http://localhost:3500/watches", {
+            id: tokenId,
+            walletAddress: newWatch.walletAddress,
+            desc: newWatch.desc,
+          });
+          closeMintModalWindow();
+          window.location.reload();
+        } catch (error) {
+          alert("Limitation in a database");
+          console.error("Failed to add Watch to database: ", error);
+        }
+      } else {
+        console.log("Error when executing a transaction on the smart contract");
+      }
+    } else {
+      console.log("validate failed");
     }
   };
 
@@ -87,20 +125,6 @@ const MintNft = () => {
           <div className="modal-overlay">
             <h2>Mint Watch</h2>
             <div className="nft-form">
-              <div className="form-group">
-                <input
-                  name="id"
-                  className={`form-input `}
-                  value={newWatch.id}
-                  onChange={handleInputChange}
-                  onFocus={() => handleFieldFocus("id")}
-                  onBlur={() => handleFieldBlur("id")}
-                />
-                <label className={`form-label `}>
-                  {fieldFocused.id || newWatch.id !== "" ? "" : "NFT's id"}
-                </label>
-              </div>
-
               <div className="form-group">
                 <input
                   name="walletAddress"

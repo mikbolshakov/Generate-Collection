@@ -10,7 +10,7 @@ async function main() {
   await nftwatches.deployed();
   console.log(`NFT deployed to ${nftwatches.address}`);
 
-  await new Promise((resolve) => setTimeout(resolve, 30000));
+  await new Promise((resolve) => setTimeout(resolve, 15000));
 
   await hre.run("verify:verify", {
     address: nftwatches.address,
