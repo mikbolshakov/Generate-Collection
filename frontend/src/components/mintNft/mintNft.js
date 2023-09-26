@@ -42,9 +42,10 @@ const MintNft = () => {
         desc: newWatch.desc,
       });
       closeMintModalWindow();
+      window.location.reload();
     } catch (error) {
       alert("Limitation in a database");
-      console.error("Failed to add employee to database: ", error);
+      console.error("Failed to add Watch to database: ", error);
     }
   };
 

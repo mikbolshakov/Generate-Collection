@@ -20,7 +20,7 @@ app.get("/all", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Error to get list of watches",
+      message: "Error to get list of watches from database",
     });
   }
 });
@@ -38,7 +38,7 @@ app.post("/watches", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Error adding the watch",
+      message: "Error adding the watch to database",
     });
   }
 });
@@ -53,7 +53,7 @@ app.put("/watches/patch", async (req, res) => {
 
     if (!updatedWatch) {
       return res.status(404).json({
-        message: "Watch not found",
+        message: "Watch not found in database",
       });
     }
 
@@ -61,7 +61,7 @@ app.put("/watches/patch", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Error updating watch data",
+      message: "Error updating watch data in database",
     });
   }
 });

@@ -4,6 +4,8 @@ import "./listNfts.css";
 
 function ListNfts() {
   const [watches, setWatches] = useState([]);
+  const [searchIdQuery, setSearchIdQuery] = useState("");
+  const [searchWalletQuery, setSearchWalletQuery] = useState("");
 
   useEffect(() => {
     const fetchWatches = async () => {
@@ -19,26 +21,49 @@ function ListNfts() {
   }, []);
 
   const renderTableRows = () => {
-    return watches.map((watch, index) => (
-      <tr key={index}>
-        <td>
-          <span>{watch.id}</span>
-        </td>
-        <td>
-          <span>{watch.walletAddress}</span>
-        </td>
-        <td>
-          <span>{watch.desc}</span>
-        </td>
-      </tr>
-    ));
+    return watches
+      .filter(
+        (watch) =>
+          watch.id.toString().includes(searchIdQuery.toString()) &&
+          watch.walletAddress
+            .toLowerCase()
+            .includes(searchWalletQuery.toLowerCase())
+      )
+      .map((watch, index) => (
+        <tr key={index}>
+          <td>
+            <span>{watch.id}</span>
+          </td>
+          <td>
+            <span>{watch.walletAddress}</span>
+          </td>
+          <td>
+            <span>{watch.desc}</span>
+          </td>
+        </tr>
+      ));
   };
 
   return (
     <div>
       <div>
         <div>
-          <h1 className="list_title">EMIVN Watches NFT</h1>
+          <h1 className="list_title">EMIVN WATCH Collection</h1>
+
+          <input
+            value={searchIdQuery}
+            onChange={(e) => setSearchIdQuery(e.target.value)}
+            placeholder="Search by NFT id"
+            className="search-input"
+          />
+
+          <input
+            value={searchWalletQuery}
+            onChange={(e) => setSearchWalletQuery(e.target.value)}
+            placeholder="Search by NFT holder's wallet"
+            className="search-input"
+          />
+
           <table className="list_table">
             <thead>
               <tr>

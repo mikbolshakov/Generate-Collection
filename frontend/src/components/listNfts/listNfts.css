@@ -6,17 +6,33 @@
 }
 
 .list_table {
-  width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  margin-bottom: 80px;
 }
 
 .list_table th {
   background-color: lightgray;
   padding: 10px;
   text-align: left;
+  min-width: 300px;
 }
 
 .list_table td {
   padding: 10px;
+}
+
+.search-container {
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.search-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 300px;
+  max-width: 100%;
+  margin-left: 10px;
 }
