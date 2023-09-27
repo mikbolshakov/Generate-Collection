@@ -19,21 +19,6 @@
   margin-left: 5px;
 }
 
-.mint-button {
-  float: left;
-  background-color: antiquewhite;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
-  font-size: 15px;
-  width: 100%;
-  max-width: 174px;
-}
-.mint-button:hover {
-  background-color: rgb(216, 199, 177);
-  cursor: pointer;
-}
-
 .form-group {
   margin-bottom: 15px;
   position: relative;
@@ -64,17 +49,14 @@
 }
 
 .mint-modal-button {
+  background-color: antiquewhite;
   padding: 8px 16px;
-  width: 90px;
-  background-color: #4caf50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  border-radius: 5px;
 }
 
 .mint-modal-button:hover {
-  background-color: #18681b;
+  background-color: rgb(216, 199, 177);
+  cursor: pointer;
 }
 
 .close-modal-button {

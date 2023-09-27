@@ -10,14 +10,14 @@ const signer = provider.getSigner();
 const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 const MintNft = () => {
+  const [fileImg, setFileImg] = useState(null);
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [openMintModal, setOpenMintModal] = useState(false);
   const [newWatch, setNewWatch] = useState({
-    id: "",
     walletAddress: "",
     desc: "",
   });
   const [fieldFocused, setFieldFocused] = useState({
-    id: false,
     walletAddress: false,
     desc: false,
   });
@@ -28,36 +28,96 @@ const MintNft = () => {
 
   const closeMintModalWindow = () => {
     setOpenMintModal(false);
+    setFileImg(null);
     setNewWatch({
-      id: "",
       walletAddress: "",
       desc: "",
     });
     setFieldFocused({
-      id: false,
       walletAddress: false,
       desc: false,
     });
+    setIsImageUploaded(false);
   };
 
   const validateForm = () => {
     const { walletAddress, desc } = newWatch;
-    if (!walletAddress.startsWith("0x") || walletAddress.length !== 42)
+    if (!walletAddress.startsWith("0x") || walletAddress.length !== 42) {
       alert(
         'The wallet address must start with "0x" and be 42 characters long'
       );
-    else if (!desc) alert("Enter the description of the Watch");
-    return false;
+      return false;
+    }
+    if (!desc) {
+      alert("Enter the description of the Watch");
+      return false;
+    }
+    return true;
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFileImg(selectedFile);
+    setIsImageUploaded(true);
   };
 
   const mintNFT = async (e) => {
     e.preventDefault();
+
+    let imgLink;
+    let jsonLink;
+    let receipt;
+    let tokenId;
+
     if (validateForm()) {
-      let receipt;
-      let tokenId;
+      if (fileImg) {
+        try {
+          const formData = new FormData();
+          formData.append("file", fileImg);
+          const resFile = await axios({
+            method: "post",
+            url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+            data: formData,
+            headers: {
+              pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
+              pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          imgLink = `https://scarlet-ideal-lynx-170.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+        } catch (error) {
+          console.log("Error sending File to IPFS: ");
+          console.log(error);
+        }
+      }
+
+      const jsonData = {
+        name: newWatch.walletAddress,
+        description: newWatch.desc,
+        image: imgLink,
+      };
+      const jsonString = JSON.stringify(jsonData, null, 2);
 
       try {
-        let tx = await contract.safeMint(newWatch.walletAddress, "uri");
+        const resJson = await axios({
+          method: "post",
+          url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+          data: jsonString,
+          headers: {
+            pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
+            pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
+            "Content-Type": "application/json",
+          },
+        });
+        jsonLink = `https://scarlet-ideal-lynx-170.mypinata.cloud/ipfs/${resJson.data.IpfsHash}`;
+        console.log(jsonLink);
+      } catch (error) {
+        console.log("Error sending JSON to IPFS: ");
+        console.log(error);
+      }
+
+      try {
+        let tx = await contract.safeMint(newWatch.walletAddress, jsonLink);
         receipt = await tx.wait();
         tx = await contract.getTokenCounter();
         tokenId = tx.toNumber();
@@ -83,7 +143,7 @@ const MintNft = () => {
         console.log("Error when executing a transaction on the smart contract");
       }
     } else {
-      console.log("validate failed");
+      console.log("Validation failed");
     }
   };
 
@@ -127,6 +187,14 @@ const MintNft = () => {
             <div className="nft-form">
               <div className="form-group">
                 <input
+                  type="file"
+                  name="file"
+                  className="form-input"
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
                   name="walletAddress"
                   className={`form-input `}
                   value={newWatch.walletAddress}
@@ -158,7 +226,11 @@ const MintNft = () => {
               </div>
 
               <div className="mint-modal">
-                <button className="mint-modal-button" onClick={mintNFT}>
+                <button
+                  className="mint-modal-button"
+                  onClick={mintNFT}
+                  disabled={!isImageUploaded}
+                >
                   Mint NFT
                 </button>
                 <button
