@@ -92,7 +92,7 @@ const MintNft = () => {
       }
 
       const jsonData = {
-        name: newWatch.walletAddress,
+        name: "Эксклюзивные часы ручной работы EMIVN",
         description: newWatch.desc,
         image: imgLink,
       };

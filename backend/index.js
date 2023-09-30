@@ -44,27 +44,26 @@ app.post("/watches", async (req, res) => {
 });
 
 app.get("/watches/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const watch = await Watch.findOne({ id });
-  
-      if (!watch) {
-        return res.status(404).json({
-          message: "Watch not found in database",
-        });
-      }
-  
-      res.json({
-        walletAddress: watch.walletAddress,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: "Error fetching walletAddress from database",
+  try {
+    const { id } = req.params;
+    const watch = await Watch.findOne({ id });
+
+    if (!watch) {
+      return res.status(404).json({
+        message: "Watch not found in database",
       });
     }
-  });
-  
+
+    res.json({
+      walletAddress: watch.walletAddress,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error fetching walletAddress from database",
+    });
+  }
+});
 
 app.put("/watches/:id", async (req, res) => {
   try {
