@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import Watch from "./schema.js";
+import Admin from "./schemaAdmin.js";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
@@ -12,6 +13,39 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.post("/admins", async (req, res) => {
+  try {
+    const { walletAddress } = req.body;
+    const newAdmin = new Admin({
+      walletAddress,
+    });
+    const user = await newAdmin.save();
+    res.json({ ...user._doc });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error adding admin to database",
+    });
+  }
+});
+
+app.get("/getAdmins", async (req, res) => {
+  try {
+    const { walletAddress } = req.query;
+    const admin = await Admin.findOne({ walletAddress });
+    if (admin) {
+      res.json(true);
+    } else {
+      res.json(false);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error checking wallet",
+    });
+  }
+});
 
 app.get("/all", async (req, res) => {
   try {

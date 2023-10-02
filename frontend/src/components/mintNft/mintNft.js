@@ -10,6 +10,7 @@ const signer = provider.getSigner();
 const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 const MintNft = () => {
+  const [walletAddress, setWalletAddress] = useState("");
   const [fileImg, setFileImg] = useState(null);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [openMintModal, setOpenMintModal] = useState(false);
@@ -68,79 +69,113 @@ const MintNft = () => {
     let jsonLink;
     let receipt;
     let tokenId;
+    let response;
 
     if (validateForm()) {
-      if (fileImg) {
-        try {
-          const formData = new FormData();
-          formData.append("file", fileImg);
-          const resFile = await axios({
-            method: "post",
-            url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
-            data: formData,
-            headers: {
-              pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
-              pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          imgLink = `https://scarlet-ideal-lynx-170.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
-        } catch (error) {
-          console.log("Error sending File to IPFS: ");
-          console.log(error);
-        }
-      }
-
-      const jsonData = {
-        name: "Эксклюзивные часы ручной работы EMIVN",
-        description: newWatch.desc,
-        image: imgLink,
-      };
-      const jsonString = JSON.stringify(jsonData, null, 2);
-
       try {
-        const resJson = await axios({
-          method: "post",
-          url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-          data: jsonString,
-          headers: {
-            pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
-            pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
-            "Content-Type": "application/json",
-          },
-        });
-        jsonLink = `https://scarlet-ideal-lynx-170.mypinata.cloud/ipfs/${resJson.data.IpfsHash}`;
-        console.log(jsonLink);
+        const accounts = await window.ethereum
+          .request({ method: "eth_requestAccounts" })
+          .then((res) => {
+            console.log(res);
+            return res;
+          });
+
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0].toLowerCase());
+        }
+        console.log(walletAddress);
       } catch (error) {
-        console.log("Error sending JSON to IPFS: ");
         console.log(error);
       }
 
       try {
-        let tx = await contract.safeMint(newWatch.walletAddress, jsonLink);
-        receipt = await tx.wait();
-        tx = await contract.getTokenCounter();
-        tokenId = tx.toNumber();
+        response = await axios.get(
+          `http://localhost:3500/getAdmins?walletAddress=${walletAddress}`
+        );
+        console.log("LFG", response.data);
+        console.log(walletAddress);
       } catch (error) {
-        alert("Limitation in a smart contract");
-        console.error("Failed to mint NFT on the smart contract: ", error);
+        console.error("Error checking wallet: ", error);
       }
 
-      if (receipt && receipt.status === 1) {
+      if (response.data === true) {
+        if (fileImg) {
+          try {
+            const formData = new FormData();
+            formData.append("file", fileImg);
+            const resFile = await axios({
+              method: "post",
+              url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+              data: formData,
+              headers: {
+                pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
+                pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            imgLink = `https://scarlet-ideal-lynx-170.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+          } catch (error) {
+            console.log("Error sending File to IPFS: ");
+            console.log(error);
+          }
+        }
+
+        const jsonData = {
+          name: "Эксклюзивные часы ручной работы EMIVN",
+          description: newWatch.desc,
+          image: imgLink,
+        };
+        const jsonString = JSON.stringify(jsonData, null, 2);
+
         try {
-          await axios.post("http://localhost:3500/watches", {
-            id: tokenId,
-            walletAddress: newWatch.walletAddress,
-            desc: newWatch.desc,
+          const resJson = await axios({
+            method: "post",
+            url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+            data: jsonString,
+            headers: {
+              pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
+              pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
+              "Content-Type": "application/json",
+            },
           });
-          closeMintModalWindow();
-          window.location.reload();
+          jsonLink = `https://scarlet-ideal-lynx-170.mypinata.cloud/ipfs/${resJson.data.IpfsHash}`;
+          console.log(jsonLink);
         } catch (error) {
-          alert("Limitation in a database");
-          console.error("Failed to add Watch to database: ", error);
+          console.log("Error sending JSON to IPFS: ");
+          console.log(error);
+        }
+
+        try {
+          let tx = await contract.safeMint(newWatch.walletAddress, jsonLink);
+          receipt = await tx.wait();
+          tx = await contract.getTokenCounter();
+          tokenId = tx.toNumber();
+        } catch (error) {
+          alert("Limitation in a smart contract");
+          console.error("Failed to mint NFT on the smart contract: ", error);
+        }
+
+        if (receipt && receipt.status === 1) {
+          try {
+            await axios.post("http://localhost:3500/watches", {
+              id: tokenId,
+              walletAddress: newWatch.walletAddress,
+              desc: newWatch.desc,
+            });
+            setWalletAddress("");
+            closeMintModalWindow();
+            window.location.reload();
+          } catch (error) {
+            alert("Limitation in a database");
+            console.error("Failed to add Watch to database: ", error);
+          }
+        } else {
+          console.log(
+            "Error when executing a transaction on the smart contract"
+          );
         }
       } else {
-        console.log("Error when executing a transaction on the smart contract");
+        alert("Not an admin!");
       }
     } else {
       console.log("Validation failed");

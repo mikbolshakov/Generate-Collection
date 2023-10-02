@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Wallet from "./components/wallet/wallet";
 import ListNfts from "./components/listNfts/listNfts";
 import MintNft from "./components/mintNft/mintNft";
+import AddAdmin from "./components/addAdmin/addAdmin";
 import UpdateWallets from "./components/updateWallets/updateWallets";
 import arrow from "./additions/arrow.png";
 import "./App.css";
@@ -37,6 +38,9 @@ function App() {
       </div>
       <div className="section" id="wallet">
         <Wallet />
+      </div>
+      <div className="section" id="admin">
+        <AddAdmin />
       </div>
       <div className="section" id="list">
         <ListNfts />
