@@ -33,7 +33,7 @@ function App() {
       <div className="section" id="mint">
         <MintNft />
       </div>
-      <div className="section" id="mint">
+      <div className="section" id="update">
         <UpdateWallets />
       </div>
       <div className="section" id="wallet">

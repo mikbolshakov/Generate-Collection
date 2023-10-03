@@ -22,11 +22,11 @@ const UpdateWallets = () => {
 
         try {
           const existingWallet = await axios.get(
-            `http://localhost:3500/watches/${tokenIdStr}`
+            `http://localhost:3500/nfts/${tokenIdStr}`
           );
           if (existingWallet && existingWallet.data.walletAddress !== owner) {
             const response = await axios.put(
-              `http://localhost:3500/watches/${tokenIdStr}`,
+              `http://localhost:3500/nfts/${tokenIdStr}`,
               {
                 walletAddress: owner,
               }

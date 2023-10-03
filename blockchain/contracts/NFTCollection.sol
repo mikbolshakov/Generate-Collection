@@ -5,13 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract NFTWatches is ERC721, ERC721URIStorage, AccessControl {
+contract NFTCollection is ERC721, ERC721URIStorage, AccessControl {
     uint256 constant COLLECTION_LIMIT = 200;
     uint256 tokenCounter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    constructor(address _admin) ERC721("EMIVNWATCH", "EMIVNW") {
+    constructor(address _admin) ERC721("NFTCollection", "NFTC") {
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(MINTER_ROLE, _admin);
     }

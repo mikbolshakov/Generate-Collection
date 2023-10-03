@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import Watch from "./schema.js";
+import NFT from "./schema.js";
 import Admin from "./schemaAdmin.js";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -49,47 +49,47 @@ app.get("/getAdmins", async (req, res) => {
 
 app.get("/all", async (req, res) => {
   try {
-    const watches = await Watch.find({});
-    res.json(watches);
+    const nfts = await NFT.find({});
+    res.json(nfts);
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Error to get list of watches from database",
+      message: "Error to get list of NFTs from database",
     });
   }
 });
 
-app.post("/watches", async (req, res) => {
+app.post("/nfts", async (req, res) => {
   try {
     const { id, walletAddress, desc } = req.body;
-    const newWatch = new Watch({
+    const newNFT = new NFT({
       id,
       walletAddress,
       desc,
     });
-    const user = await newWatch.save();
+    const user = await newNFT.save();
     res.json({ ...user._doc });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Error adding the watch to database",
+      message: "Error adding the nft to database",
     });
   }
 });
 
-app.get("/watches/:id", async (req, res) => {
+app.get("/nfts/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const watch = await Watch.findOne({ id });
+    const nft = await NFT.findOne({ id });
 
-    if (!watch) {
+    if (!nft) {
       return res.status(404).json({
-        message: "Watch not found in database",
+        message: "NFT not found in database",
       });
     }
 
     res.json({
-      walletAddress: watch.walletAddress,
+      walletAddress: nft.walletAddress,
     });
   } catch (error) {
     console.error(error);
@@ -99,26 +99,26 @@ app.get("/watches/:id", async (req, res) => {
   }
 });
 
-app.put("/watches/:id", async (req, res) => {
+app.put("/nfts/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { walletAddress } = req.body;
-    const updatedWatch = await Watch.findOneAndUpdate(
+    const updatedNFT = await NFT.findOneAndUpdate(
       { id },
       { $set: { walletAddress } }
     );
 
-    if (!updatedWatch) {
+    if (!updatedNFT) {
       return res.status(404).json({
-        message: "Watch not found in database",
+        message: "NFT not found in database",
       });
     }
 
-    res.json(updatedWatch);
+    res.json(updatedNFT);
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Error updating watch data in database",
+      message: "Error updating nft data in database",
     });
   }
 });

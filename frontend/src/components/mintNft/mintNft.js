@@ -14,7 +14,7 @@ const MintNft = () => {
   const [fileImg, setFileImg] = useState(null);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [openMintModal, setOpenMintModal] = useState(false);
-  const [newWatch, setNewWatch] = useState({
+  const [newNft, setNewNft] = useState({
     walletAddress: "",
     desc: "",
   });
@@ -30,7 +30,7 @@ const MintNft = () => {
   const closeMintModalWindow = () => {
     setOpenMintModal(false);
     setFileImg(null);
-    setNewWatch({
+    setNewNft({
       walletAddress: "",
       desc: "",
     });
@@ -42,7 +42,7 @@ const MintNft = () => {
   };
 
   const validateForm = () => {
-    const { walletAddress, desc } = newWatch;
+    const { walletAddress, desc } = newNft;
     if (!walletAddress.startsWith("0x") || walletAddress.length !== 42) {
       alert(
         'The wallet address must start with "0x" and be 42 characters long'
@@ -50,7 +50,7 @@ const MintNft = () => {
       return false;
     }
     if (!desc) {
-      alert("Enter the description of the Watch");
+      alert("Enter the description of the Nft");
       return false;
     }
     return true;
@@ -122,7 +122,7 @@ const MintNft = () => {
 
         const jsonData = {
           name: "Эксклюзивные часы ручной работы EMIVN",
-          description: newWatch.desc,
+          description: newNft.desc,
           image: imgLink,
         };
         const jsonString = JSON.stringify(jsonData, null, 2);
@@ -146,7 +146,7 @@ const MintNft = () => {
         }
 
         try {
-          let tx = await contract.safeMint(newWatch.walletAddress, jsonLink);
+          let tx = await contract.safeMint(newNft.walletAddress, jsonLink);
           receipt = await tx.wait();
           tx = await contract.getTokenCounter();
           tokenId = tx.toNumber();
@@ -157,17 +157,17 @@ const MintNft = () => {
 
         if (receipt && receipt.status === 1) {
           try {
-            await axios.post("http://localhost:3500/watches", {
+            await axios.post("http://localhost:3500/nfts", {
               id: tokenId,
-              walletAddress: newWatch.walletAddress,
-              desc: newWatch.desc,
+              walletAddress: newNft.walletAddress,
+              desc: newNft.desc,
             });
             setWalletAddress("");
             closeMintModalWindow();
             window.location.reload();
           } catch (error) {
             alert("Limitation in a database");
-            console.error("Failed to add Watch to database: ", error);
+            console.error("Failed to add Nft to database: ", error);
           }
         } else {
           console.log(
@@ -185,8 +185,8 @@ const MintNft = () => {
   // display text in input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewWatch({
-      ...newWatch,
+    setNewNft({
+      ...newNft,
       [name]: value,
     });
   };
@@ -201,7 +201,7 @@ const MintNft = () => {
 
   // without it, the input description disappears if you switch to another input
   const handleFieldBlur = (fieldName) => {
-    if (newWatch[fieldName] === "") {
+    if (newNft[fieldName] === "") {
       setFieldFocused({
         ...fieldFocused,
         [fieldName]: false,
@@ -218,7 +218,7 @@ const MintNft = () => {
       {openMintModal && (
         <div className="modal">
           <div className="modal-overlay">
-            <h2>Mint Watch</h2>
+            <h2>Mint Nft</h2>
             <div className="nft-form">
               <div className="form-group">
                 <input
@@ -232,13 +232,13 @@ const MintNft = () => {
                 <input
                   name="walletAddress"
                   className={`form-input `}
-                  value={newWatch.walletAddress}
+                  value={newNft.walletAddress}
                   onChange={handleInputChange}
                   onFocus={() => handleFieldFocus("walletAddress")}
                   onBlur={() => handleFieldBlur("walletAddress")}
                 />
                 <label className={`form-label`}>
-                  {fieldFocused.walletAddress || newWatch.walletAddress !== ""
+                  {fieldFocused.walletAddress || newNft.walletAddress !== ""
                     ? ""
                     : "Recipient wallet address"}
                 </label>
@@ -248,13 +248,13 @@ const MintNft = () => {
                 <input
                   name="desc"
                   className={`form-input `}
-                  value={newWatch.desc}
+                  value={newNft.desc}
                   onChange={handleInputChange}
                   onFocus={() => handleFieldFocus("desc")}
                   onBlur={() => handleFieldBlur("desc")}
                 />
                 <label className={`form-label `}>
-                  {fieldFocused.desc || newWatch.desc !== ""
+                  {fieldFocused.desc || newNft.desc !== ""
                     ? ""
                     : "NFT's description"}
                 </label>

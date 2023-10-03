@@ -4,19 +4,19 @@ import "hardhat-deploy";
 
 // npx hardhat run scripts/deploy.ts --network chain
 async function main() {
-  const adminAddress = "0x3a55811a1f200d5a418156072bcbbfb8d82b989d";
-  const NFTWatches = await ethers.getContractFactory("NFTWatches");
-  const nftwatches = await NFTWatches.deploy(adminAddress);
+  const adminAddress = "0x2c84C3D16AaAC1157919D9210CBC7b8797F5A91a";
+  const NFTCollection = await ethers.getContractFactory("NFTCollection");
+  const nftCollection = await NFTCollection.deploy(adminAddress);
 
-  await nftwatches.deployed();
-  console.log(`NFT deployed to ${nftwatches.address}`);
+  await nftCollection.deployed();
+  console.log(`NFT deployed to ${nftCollection.address}`);
 
   await new Promise((resolve) => setTimeout(resolve, 15000));
 
   await hre.run("verify:verify", {
-    address: nftwatches.address,
+    address: nftCollection.address,
     constructorArguments: [adminAddress],
-    contract: "contracts/NFTWatches.sol:NFTWatches",
+    contract: "contracts/NFTCollection.sol:NFTCollection",
   });
 }
 

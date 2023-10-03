@@ -3,42 +3,42 @@ import axios from "axios";
 import "./listNfts.css";
 
 function ListNfts() {
-  const [watches, setWatches] = useState([]);
+  const [nfts, setNfts] = useState([]);
   const [searchIdQuery, setSearchIdQuery] = useState("");
   const [searchWalletQuery, setSearchWalletQuery] = useState("");
 
   useEffect(() => {
-    const fetchWatches = async () => {
+    const fetchNfts = async () => {
       try {
         const response = await axios.get("http://localhost:3500/all");
-        setWatches(response.data);
+        setNfts(response.data);
       } catch (error) {
         console.error(error);
-        alert("Watches display error");
+        alert("NFT display error");
       }
     };
-    fetchWatches();
+    fetchNfts();
   }, []);
 
   const renderTableRows = () => {
-    return watches
+    return nfts
       .filter(
-        (watch) =>
-          watch.id.toString().includes(searchIdQuery.toString()) &&
-          watch.walletAddress
+        (nft) =>
+          nft.id.toString().includes(searchIdQuery.toString()) &&
+          nft.walletAddress
             .toLowerCase()
             .includes(searchWalletQuery.toLowerCase())
       )
-      .map((watch, index) => (
+      .map((nft, index) => (
         <tr key={index}>
           <td>
-            <span>{watch.id}</span>
+            <span>{nft.id}</span>
           </td>
           <td>
-            <span>{watch.walletAddress}</span>
+            <span>{nft.walletAddress}</span>
           </td>
           <td>
-            <span>{watch.desc}</span>
+            <span>{nft.desc}</span>
           </td>
         </tr>
       ));
@@ -48,7 +48,7 @@ function ListNfts() {
     <div>
       <div>
         <div>
-          <h1 className="list_title">EMIVN WATCH Collection</h1>
+          <h1 className="list_title">NFT Collection</h1>
 
           <input
             value={searchIdQuery}
@@ -67,9 +67,9 @@ function ListNfts() {
           <table className="list_table">
             <thead>
               <tr>
-                <th>id часов</th>
-                <th>Кошелек</th>
-                <th>Описание</th>
+                <th>NFT's id</th>
+                <th>Owner's wallet</th>
+                <th>Description</th>
               </tr>
             </thead>
             <tbody>{renderTableRows()}</tbody>

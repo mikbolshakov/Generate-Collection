@@ -66,7 +66,7 @@ const AddAdmin = () => {
           closeAdminModalWindow();
         } catch (error) {
           alert("Limitation in a database");
-          console.error("Failed to add Watch to database: ", error);
+          console.error("Failed to add Admin to database: ", error);
         }
       } else {
         console.log("Error when executing a transaction on the smart contract");

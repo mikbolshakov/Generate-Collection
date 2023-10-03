@@ -1,10 +1,10 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { NFTWatches } from "../typechain-types";
+import { NFTCollection } from "../typechain-types";
 
 describe("FastCollection tests", () => {
-  let nftContract: NFTWatches;
+  let nftContract: NFTCollection;
   let signers: SignerWithAddress[];
   let admin: SignerWithAddress;
   before(async () => {
@@ -13,11 +13,11 @@ describe("FastCollection tests", () => {
   });
 
   it("Deploys NFT contract", async () => {
-    const Factory = await ethers.getContractFactory("NFTWatches");
-    const nftWatches = await Factory.deploy();
+    const Factory = await ethers.getContractFactory("NFTCollection");
+    const nftCollection = await Factory.deploy();
 
-    expect(nftWatches.address).to.not.eq(ethers.constants.AddressZero);
-    nftContract = nftWatches as NFTWatches;
+    expect(nftCollection.address).to.not.eq(ethers.constants.AddressZero);
+    nftContract = nftCollection as NFTCollection;
   });
 
   it("Checks mint function", async () => {
